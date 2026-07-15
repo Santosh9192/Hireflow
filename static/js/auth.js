@@ -39,18 +39,33 @@ const AuthPages = {
                             Sign In
                         </button>
 
-                        <div class="auth-divider">or continue with</div>
+                        <div class="auth-divider">Quick Login</div>
 
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-sm);">
-                            <button type="button" class="btn btn-secondary" disabled>
-                                <i class="fab fa-google"></i> Google
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--spacing-sm);">
+                            <button type="button" class="btn btn-sm" style="background: rgba(124,58,237,0.15); color: var(--primary-light); border: 1px solid rgba(124,58,237,0.3); padding: 0.75rem 0.5rem; font-size: 0.75rem; cursor: pointer; border-radius: var(--radius-lg); transition: all 0.2s;" 
+                                    onmouseover="this.style.background='rgba(124,58,237,0.25)'"
+                                    onmouseout="this.style.background='rgba(124,58,237,0.15)'"
+                                    onclick="AuthPages.quickLogin('alex.martinez@gmail.com', 'Candidate@123')">
+                                <div style="font-weight: 600;">👤 Candidate</div>
+                                <div style="font-size: 0.65rem; opacity: 0.7; margin-top: 2px;">Demo Account</div>
                             </button>
-                            <button type="button" class="btn btn-secondary" disabled>
-                                <i class="fab fa-github"></i> GitHub
+                            <button type="button" class="btn btn-sm" style="background: rgba(16,185,129,0.15); color: var(--accent-green); border: 1px solid rgba(16,185,129,0.3); padding: 0.75rem 0.5rem; font-size: 0.75rem; cursor: pointer; border-radius: var(--radius-lg); transition: all 0.2s;"
+                                    onmouseover="this.style.background='rgba(16,185,129,0.25)'"
+                                    onmouseout="this.style.background='rgba(16,185,129,0.15)'"
+                                    onclick="AuthPages.quickLogin('sarah.johnson@techcorp.com', 'Recruiter@123')">
+                                <div style="font-weight: 600;">💼 Recruiter</div>
+                                <div style="font-size: 0.65rem; opacity: 0.7; margin-top: 2px;">Demo Account</div>
+                            </button>
+                            <button type="button" class="btn btn-sm" style="background: rgba(245,158,11,0.15); color: var(--accent-yellow); border: 1px solid rgba(245,158,11,0.3); padding: 0.75rem 0.5rem; font-size: 0.75rem; cursor: pointer; border-radius: var(--radius-lg); transition: all 0.2s;"
+                                    onmouseover="this.style.background='rgba(245,158,11,0.25)'"
+                                    onmouseout="this.style.background='rgba(245,158,11,0.15)'"
+                                    onclick="AuthPages.quickLogin('admin@hireflow.ai', 'Admin@123')">
+                                <div style="font-weight: 600;">👑 Admin</div>
+                                <div style="font-size: 0.65rem; opacity: 0.7; margin-top: 2px;">Demo Account</div>
                             </button>
                         </div>
 
-                        <div class="auth-footer">
+                        <div class="auth-footer" style="margin-top: 1rem;">
                             Don't have an account? <a href="#register">Create one</a>
                         </div>
                     </form>
@@ -189,6 +204,17 @@ const AuthPages = {
                 </div>
             </div>
         `;
+    },
+
+    quickLogin(email, password) {
+        // Fill the form fields and submit automatically
+        const form = document.getElementById('loginForm');
+        if (form) {
+            form.querySelector('[name="email"]').value = email;
+            form.querySelector('[name="password"]').value = password;
+            // Dispatch submit event on the form so event.target is correct
+            form.dispatchEvent(new Event('submit', { cancelable: true }));
+        }
     },
 
     async handleLogin(event) {

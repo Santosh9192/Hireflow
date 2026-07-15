@@ -26,11 +26,13 @@
 
 <div align="center">
   
-| Login Page | Candidate Dashboard | Browse Jobs |
+| Login Page | Candidate Dashboard | Recruiter Dashboard |
 |:---:|:---:|:---:|
-| ![Login Page](screenshots/login.png) | ![Dashboard](screenshots/dashboard.png) | ![Browse Jobs](screenshots/jobs.png) |
-| **AI Chat Assistant** | **Light Theme** | **Profile Page** |
-| ![AI Chat](screenshots/ai-chat.png) | ![Light Theme](screenshots/light-theme.png) | ![Profile](screenshots/profile.png) |
+| ![Login Page](screenshots/login_page.png) | ![Candidate Dashboard](screenshots/candidate_dashboard.png) | ![Recruiter Dashboard](screenshots/recruter_dashboard.png) |
+| **Admin Dashboard** | **AI Assistant** | **Candidate Profile** |
+| ![Admin Dashboard](screenshots/admin_dashboard.png) | ![AI Assistant](screenshots/AI_assistant.png) | ![Candidate Profile](screenshots/candidate_profile.png) |
+| **Application History** |
+| ![Applications](screenshots/candidate_application_history.png) |
 
 </div>
 

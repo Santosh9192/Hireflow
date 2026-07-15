@@ -1053,7 +1053,7 @@ const App = {
               <i class="fas fa-cog"></i> Settings
             </button>
             <div class="dropdown-divider"></div>
-            <button class="dropdown-item" onclick="App.handleLogout()">
+            <button class="dropdown-item" onclick="App.handleLogout(event)">
               <i class="fas fa-sign-out-alt"></i> Logout
             </button>
           </div>
@@ -1083,15 +1083,23 @@ const App = {
     window.location.hash = `#${route}`;
   },
 
-  async handleLogout() {
+  async handleLogout(e) {
+    // Prevent default link behavior if called from <a> tag
+    if (e && e.preventDefault) e.preventDefault();
+    
     try {
       await API.logout();
-      UI.showToast('Logged out successfully', 'success');
-      window.location.hash = '#login';
-      window.location.reload();
     } catch (error) {
-      UI.showToast('Failed to logout', 'error');
+      // Token may be expired - still clear auth and log out
+      console.warn('Logout API error (may be expected):', error.message);
     }
+    
+    // Always clear auth and redirect
+    API.clearAuth();
+    Store.set('user', null);
+    UI.showToast('Logged out successfully', 'success');
+    window.location.hash = '#login';
+    window.location.reload();
   },
 
   async checkAuth() {
