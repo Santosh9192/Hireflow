@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HireFlow AI - AI-Powered Applicant Tracking System">
+    <meta name="theme-color" content="#7c3aed">
+    <title>HireFlow AI - Intelligent Recruitment Platform</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <style>
+        /* Initial app shell */
+        .app-shell {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--bg-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-right: 1px solid var(--border-color);
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            transition: width var(--transition-normal), transform var(--transition-normal);
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            min-height: var(--navbar-height);
+        }
+
+        .sidebar-logo {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            border-radius: var(--radius-lg);
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: var(--sidebar-width);
+            height: var(--navbar-height);
+            background: var(--bg-glass);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--spacing-xl);
+            z-index: 100;
+            transition: left var(--transition-normal);
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: var(--spacing-xl);
+            padding-top: calc(var(--navbar-height) + var(--spacing-xl));
+            transition: margin-left var(--transition-normal);
+            min-height: 100vh;
+        }
+
+        .toast-container {
+            position: fixed;
+            top: calc(var(--navbar-height) + var(--spacing-md));
+            right: var(--spacing-xl);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .page-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .navbar {
+                left: 0;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: var(--spacing-md);
+                padding-top: calc(var(--navbar-height) + var(--spacing-md));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-shell">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">HF</div>
+                <span class="sidebar-brand">HireFlow AI</span>
+            </div>
+
+            <nav class="sidebar-nav" id="sidebarNav">
+                <!-- Candidate Navigation -->
+                <div class="nav-section" data-role="candidate,recruiter,admin">
+                    <div class="nav-section-title">Main</div>
+                    <a class="nav-item" data-route="dashboard" href="#dashboard" onclick="App.navigateTo('dashboard')">
+                        <i class="fas fa-th-large nav-icon"></i>
+                        <span class="nav-label">Dashboard</span>
+                    </a>
+                </div>
+
+                <div class="nav-section" data-role="candidate,recruiter,admin">
+                    <div class="nav-section-title">AI Tools</div>
+                    <a class="nav-item" data-route="ai-chat" href="#ai-chat" onclick="App.navigateTo('ai-chat')">
+                        <i class="fas fa-robot nav-icon"></i>
+                        <span class="nav-label">AI Assistant</span>
+                    </a>
+                </div>
+
+                <div class="nav-section" data-role="candidate">
+                    <div class="nav-section-title">Jobs</div>
+                    <a class="nav-item" data-route="jobs" href="#jobs" onclick="App.navigateTo('jobs')">
+                        <i class="fas fa-search nav-icon"></i>
+                        <span class="nav-label">Browse Jobs</span>
+                    </a>
+                    <a class="nav-item" data-route="applications" href="#applications" onclick="App.navigateTo('applications')">
+                        <i class="fas fa-file-alt nav-icon"></i>
+                        <span class="nav-label">Applications</span>
+                    </a>
+                    <a class="nav-item" data-route="saved-jobs" href="#saved-jobs" onclick="App.navigateTo('saved-jobs')">
+                        <i class="fas fa-bookmark nav-icon"></i>
+                        <span class="nav-label">Saved Jobs</span>
+                    </a>
+                </div>
+
+                <!-- Recruiter Navigation -->
+                <div class="nav-section" data-role="recruiter">
+                    <div class="nav-section-title">Recruitment</div>
+                    <a class="nav-item" data-route="recruiter-jobs" href="#recruiter-jobs" onclick="App.navigateTo('recruiter-jobs')">
+                        <i class="fas fa-briefcase nav-icon"></i>
+                        <span class="nav-label">My Jobs</span>
+                    </a>
+                    <a class="nav-item" data-route="recruiter-applications" href="#recruiter-applications" onclick="App.navigateTo('recruiter-applications')">
+                        <i class="fas fa-users nav-icon"></i>
+                        <span class="nav-label">Applications</span>
+                    </a>
+                    <a class="nav-item" data-route="recruiter-interviews" href="#recruiter-interviews" onclick="App.navigateTo('recruiter-interviews')">
+                        <i class="fas fa-calendar nav-icon"></i>
+                        <span class="nav-label">Interviews</span>
+                    </a>
+                    <a class="nav-item" data-route="post-job" href="#post-job" onclick="App.navigateTo('post-job')">
+                        <i class="fas fa-plus-circle nav-icon"></i>
+                        <span class="nav-label">Post Job</span>
+                    </a>
+                </div>
+
+                <!-- Admin Navigation -->
+                <div class="nav-section" data-role="admin">
+                    <div class="nav-section-title">Administration</div>
+                    <a class="nav-item" data-route="admin-dashboard" href="#admin-dashboard" onclick="App.navigateTo('admin-dashboard')">
+                        <i class="fas fa-chart-pie nav-icon"></i>
+                        <span class="nav-label">Dashboard</span>
+                    </a>
+                    <a class="nav-item" data-route="admin-users" href="#admin-users" onclick="App.navigateTo('admin-users')">
+                        <i class="fas fa-user-shield nav-icon"></i>
+                        <span class="nav-label">Users</span>
+                    </a>
+                    <a class="nav-item" data-route="admin-jobs" href="#admin-jobs" onclick="App.navigateTo('admin-jobs')">
+                        <i class="fas fa-briefcase nav-icon"></i>
+                        <span class="nav-label">Jobs</span>
+                    </a>
+                    <a class="nav-item" data-route="admin-logs" href="#admin-logs" onclick="App.navigateTo('admin-logs')">
+                        <i class="fas fa-history nav-icon"></i>
+                        <span class="nav-label">Activity Logs</span>
+                    </a>
+                </div>
+
+                <!-- Profile & Settings -->
+                <div class="nav-section" data-role="candidate,recruiter,admin">
+                    <div class="nav-section-title">Account</div>
+                    <a class="nav-item" data-route="profile" href="#profile" onclick="App.navigateTo('profile')">
+                        <i class="fas fa-user nav-icon"></i>
+                        <span class="nav-label">Profile</span>
+                    </a>
+                    <a class="nav-item" data-route="settings" href="#settings" onclick="App.navigateTo('settings')">
+                        <i class="fas fa-cog nav-icon"></i>
+                        <span class="nav-label">Settings</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer" data-role="candidate,recruiter,admin">
+                <a class="nav-item" href="#" onclick="App.handleLogout()">
+                    <i class="fas fa-sign-out-alt nav-icon"></i>
+                    <span class="nav-label">Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Navbar -->
+        <header class="navbar" id="navbar">
+            <div class="navbar-left">
+                <button class="mobile-toggle btn btn-ghost btn-icon" onclick="document.getElementById('sidebar').classList.toggle('open')">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <button class="sidebar-toggle btn btn-ghost btn-icon" onclick="document.getElementById('sidebar').classList.toggle('collapsed'); document.getElementById('navbar').classList.toggle('expanded')">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="navbar-search">
+                    <i class="fas fa-search" style="color: var(--text-muted);"></i>
+                    <input type="text" placeholder="Search jobs, skills, companies..." id="globalSearch">
+                </div>
+            </div>
+
+            <div class="navbar-right">
+                <button class="theme-toggle-btn" onclick="App.toggleTheme()" id="themeToggleBtn" title="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="notification-btn btn btn-ghost btn-icon" onclick="App.toggleNotificationPanel()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" style="display:none;">0</span>
+                </button>
+                <div class="navbar-user" id="navbarUser">
+                    <!-- Filled by JS -->
+                    <a href="#login" class="btn btn-primary btn-sm">Sign In</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+            <div class="page-content" id="pageContent">
+                <div class="loading-center">
+                    <div class="spinner spinner-lg"></div>
+                    <div class="loading-text">Loading HireFlow AI...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container"></div>
+
+    <!-- Notification Panel -->
+    <div class="notification-panel" id="notificationPanel">
+        <div class="notification-panel-header">
+            <h3>Notifications</h3>
+            <button class="btn btn-ghost btn-sm" onclick="NotificationManager.markAllRead()">Mark all read</button>
+        </div>
+        <div id="notificationList" style="padding: var(--spacing-md);">
+            <div class="loading-center">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Authentication Pages (hidden by default) -->
+    <div id="authPages" style="display:none;"></div>
+
+    <!-- Scripts -->
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/pages.js"></script>
+    <script src="/static/js/auth.js"></script>
+    <script src="/static/js/dashboard.js"></script>
+    <script src="/static/js/jobs.js"></script>
+    <script src="/static/js/recruiter.js"></script>
+    <script src="/static/js/admin.js"></script>
+    <script src="/static/js/profile.js"></script>
+    <script src="/static/js/chat.js"></script>
+</body>
+</html>
